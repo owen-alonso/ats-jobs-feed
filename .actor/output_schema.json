@@ -1,0 +1,12 @@
+{
+    "$schema": "https://apify.com/schemas/v1/output.ide.json",
+    "actorOutputSchemaVersion": 1,
+    "title": "ATS job listings",
+    "properties": {
+        "results": {
+            "type": "string",
+            "title": "Job listings",
+            "template": "{{links.apiDefaultDatasetUrl}}/items"
+        }
+    }
+}

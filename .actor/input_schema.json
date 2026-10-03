@@ -1,0 +1,106 @@
+{
+    "$schema": "https://apify.com/schemas/v1/input.ide.json",
+    "title": "ATS Jobs Feed",
+    "description": "Paste career page URLs or board names. The actor detects Greenhouse, Lever, Ashby, or Workday and returns one deduplicated job feed. Leave boards empty to run the small default sample.",
+    "type": "object",
+    "schemaVersion": 1,
+    "properties": {
+        "boards": {
+            "title": "Career pages or board identifiers",
+            "type": "array",
+            "description": "Career page URLs or board slugs. Examples: https://boards.greenhouse.io/discord, https://jobs.lever.co/spotify, https://jobs.ashbyhq.com/linear, https://nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite. Prefix a slug when you want to force the ATS: greenhouse:discord, lever:spotify, ashby:linear. A bare slug is probed on Greenhouse, then Lever, then Ashby. The same board pasted twice is fetched once.",
+            "editor": "stringList",
+            "default": [
+                "https://boards.greenhouse.io/discord",
+                "https://jobs.lever.co/spotify",
+                "https://jobs.ashbyhq.com/linear"
+            ],
+            "prefill": [
+                "https://boards.greenhouse.io/discord",
+                "https://jobs.lever.co/spotify",
+                "https://jobs.ashbyhq.com/linear"
+            ]
+        },
+        "keyword": {
+            "title": "Keyword",
+            "type": "string",
+            "description": "Case-insensitive phrase matched against title, department, company, location, and description. For Workday, the keyword is also sent as the board search text, but description text is only available for jobs that already match title or location.",
+            "editor": "textfield"
+        },
+        "location": {
+            "title": "Location",
+            "type": "string",
+            "description": "Case-insensitive phrase matched against any location on the job, such as London or New York.",
+            "editor": "textfield"
+        },
+        "remoteOnly": {
+            "title": "Remote only",
+            "type": "boolean",
+            "description": "Keep jobs the source marks as remote, or whose locations are remote. Hybrid jobs are excluded.",
+            "default": false
+        },
+        "department": {
+            "title": "Department",
+            "type": "string",
+            "description": "Case-insensitive phrase matched against the department (and team, when the board provides one).",
+            "editor": "textfield"
+        },
+        "postedWithinDays": {
+            "title": "Posted within days",
+            "type": "integer",
+            "description": "Keep jobs posted in the last N days. Jobs with no posted date are dropped when this is set. Workday list dates are approximate until the job detail is loaded.",
+            "minimum": 1,
+            "maximum": 3650
+        },
+        "onlyNew": {
+            "title": "Only jobs not seen before",
+            "type": "boolean",
+            "description": "Return jobs this state key has not already returned. Seen jobs are stored between runs in a named key-value store. The first run returns jobs and records them. Raise maxResults on that first run if you want the whole board marked as seen.",
+            "default": false
+        },
+        "stateKey": {
+            "title": "State key",
+            "type": "string",
+            "description": "Name of the seen-jobs history. Use different keys to watch different lists. The history is kept for 90 days.",
+            "editor": "textfield",
+            "default": "default"
+        },
+        "resetState": {
+            "title": "Reset seen-jobs state",
+            "type": "boolean",
+            "description": "Forget previously seen jobs for this state key before the run.",
+            "default": false
+        },
+        "maxResults": {
+            "title": "Maximum results",
+            "type": "integer",
+            "description": "Maximum number of jobs to return and charge for. Newest posted dates come first. The default is small so the daily Store check stays fast.",
+            "default": 15,
+            "prefill": 15,
+            "minimum": 1,
+            "maximum": 10000
+        },
+        "maxConcurrency": {
+            "title": "Max concurrency",
+            "type": "integer",
+            "description": "How many boards to fetch at the same time. Also limits Workday detail requests.",
+            "default": 4,
+            "minimum": 1,
+            "maximum": 8
+        },
+        "includeDescriptions": {
+            "title": "Include descriptions",
+            "type": "boolean",
+            "description": "Greenhouse, Lever, and Ashby include descriptions in the board response. Workday needs one extra request per returned job. Turn this off to skip those Workday detail requests.",
+            "default": true
+        },
+        "workdayMaxJobs": {
+            "title": "Workday list limit",
+            "type": "integer",
+            "description": "Maximum Workday list rows to read per board before filtering. Workday pages are 20 jobs. This cap keeps a large tenant from hanging the run. Detail pages are loaded only for jobs that are returned.",
+            "default": 100,
+            "minimum": 1,
+            "maximum": 2000
+        }
+    }
+}

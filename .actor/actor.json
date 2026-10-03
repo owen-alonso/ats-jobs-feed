@@ -1,0 +1,18 @@
+{
+    "$schema": "https://apify.com/schemas/v1/actor.ide.json",
+    "actorSpecification": 1,
+    "name": "ats-jobs-feed",
+    "title": "Greenhouse, Lever, Ashby & Workday Jobs Feed",
+    "description": "Normalized, deduplicated jobs from public Greenhouse, Lever, Ashby, and Workday career pages. Filter by keyword, location, remote, department, and date, or return only jobs you have not seen before.",
+    "version": "1.0",
+    "buildTag": "latest",
+    "minMemoryMbytes": 512,
+    "maxMemoryMbytes": 2048,
+    "dockerfile": "../Dockerfile",
+    "readme": "../README.md",
+    "inputSchema": "./input_schema.json",
+    "outputSchema": "./output_schema.json",
+    "storages": {
+        "dataset": "./dataset_schema.json"
+    }
+}

@@ -1,0 +1,182 @@
+{
+    "$schema": "https://apify.com/schemas/v1/dataset.ide.json",
+    "actorSpecification": 1,
+    "fields": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "required": ["source", "boardId", "company", "jobId", "title", "locations", "workplaceType", "applyUrl"],
+        "properties": {
+            "source": {
+                "type": "string",
+                "title": "Source ATS",
+                "description": "Applicant tracking system the job was read from.",
+                "enum": ["greenhouse", "lever", "ashby", "workday"],
+                "example": "greenhouse"
+            },
+            "boardId": {
+                "type": "string",
+                "title": "Board ID",
+                "description": "Board slug, or tenant/site for Workday.",
+                "example": "discord"
+            },
+            "company": {
+                "type": "string",
+                "title": "Company",
+                "description": "Company name from the board, or a readable form of the board slug when the board does not send one.",
+                "example": "Discord"
+            },
+            "jobId": {
+                "type": "string",
+                "title": "Job ID",
+                "description": "Stable job identifier from the ATS.",
+                "example": "5231045"
+            },
+            "title": {
+                "type": "string",
+                "title": "Title",
+                "example": "Software Engineer"
+            },
+            "department": {
+                "type": ["string", "null"],
+                "title": "Department",
+                "description": "Department, with team appended when both are present. Null when the board does not provide one. Workday list rows usually have no department.",
+                "example": "Engineering"
+            },
+            "locations": {
+                "type": "array",
+                "title": "Locations",
+                "description": "Office or remote location names. Workday's 'N Locations' placeholder is omitted until the detail request fills in the cities.",
+                "items": { "type": "string" },
+                "example": ["San Francisco, CA"]
+            },
+            "workplaceType": {
+                "type": "string",
+                "title": "Workplace",
+                "description": "Remote, hybrid, onsite, or unknown.",
+                "enum": ["remote", "hybrid", "onsite", "unknown"],
+                "example": "hybrid"
+            },
+            "isRemote": {
+                "type": ["boolean", "null"],
+                "title": "Remote flag",
+                "description": "True when the job is fully remote, or the source explicitly sets a remote flag on a hybrid job. False for onsite. Null when unknown.",
+                "example": false
+            },
+            "employmentType": {
+                "type": ["string", "null"],
+                "title": "Employment type",
+                "description": "Full-time, part-time, contract, internship, or the board's own label.",
+                "example": "Full-time"
+            },
+            "salary": {
+                "type": ["object", "null"],
+                "title": "Salary",
+                "description": "Structured pay when the board publishes it. Null when it does not.",
+                "properties": {
+                    "min": { "type": ["number", "null"], "title": "Minimum", "example": 180000 },
+                    "max": { "type": ["number", "null"], "title": "Maximum", "example": 220000 },
+                    "currency": { "type": ["string", "null"], "title": "Currency", "example": "USD" },
+                    "interval": { "type": ["string", "null"], "title": "Interval", "description": "year, month, week, day, or hour.", "example": "year" },
+                    "text": { "type": ["string", "null"], "title": "Salary text", "example": "$180K – $220K" }
+                }
+            },
+            "postedAt": {
+                "type": ["string", "null"],
+                "title": "Posted at",
+                "description": "ISO 8601 posted date. Workday list dates are estimated from 'Posted N days ago' until a detail request replaces them with the board start date.",
+                "example": "2026-09-03T17:32:53.000Z"
+            },
+            "updatedAt": {
+                "type": ["string", "null"],
+                "title": "Updated at",
+                "description": "ISO 8601 updated date when the board provides one.",
+                "example": "2026-09-25T20:45:00.000Z"
+            },
+            "applyUrl": {
+                "type": "string",
+                "title": "Apply URL",
+                "description": "Public application or job page.",
+                "example": "https://boards.greenhouse.io/discord/jobs/5231045"
+            },
+            "descriptionText": {
+                "type": ["string", "null"],
+                "title": "Description text",
+                "description": "Job description with HTML removed."
+            },
+            "descriptionHtml": {
+                "type": ["string", "null"],
+                "title": "Description HTML",
+                "description": "Job description HTML. Greenhouse entities are decoded before this is stored."
+            }
+        }
+    },
+    "views": {
+        "overview": {
+            "title": "Overview",
+            "description": "One row per job, without the long description.",
+            "transformation": {
+                "flatten": ["salary"],
+                "fields": [
+                    "source",
+                    "company",
+                    "title",
+                    "department",
+                    "locations",
+                    "workplaceType",
+                    "isRemote",
+                    "employmentType",
+                    "salary.min",
+                    "salary.max",
+                    "salary.currency",
+                    "salary.interval",
+                    "salary.text",
+                    "postedAt",
+                    "updatedAt",
+                    "applyUrl",
+                    "jobId",
+                    "boardId"
+                ]
+            },
+            "display": {
+                "component": "table",
+                "properties": {
+                    "source": { "label": "ATS", "format": "text" },
+                    "company": { "label": "Company", "format": "text" },
+                    "title": { "label": "Title", "format": "text" },
+                    "department": { "label": "Department", "format": "text" },
+                    "locations": { "label": "Locations", "format": "array" },
+                    "workplaceType": { "label": "Workplace", "format": "text" },
+                    "isRemote": { "label": "Remote", "format": "boolean" },
+                    "employmentType": { "label": "Type", "format": "text" },
+                    "salary.min": { "label": "Salary min", "format": "number" },
+                    "salary.max": { "label": "Salary max", "format": "number" },
+                    "salary.currency": { "label": "Currency", "format": "text" },
+                    "salary.interval": { "label": "Interval", "format": "text" },
+                    "salary.text": { "label": "Salary", "format": "text" },
+                    "postedAt": { "label": "Posted", "format": "date" },
+                    "updatedAt": { "label": "Updated", "format": "date" },
+                    "applyUrl": { "label": "Apply", "format": "link" },
+                    "jobId": { "label": "Job ID", "format": "text" },
+                    "boardId": { "label": "Board", "format": "text" }
+                }
+            }
+        },
+        "descriptions": {
+            "title": "Descriptions",
+            "description": "Title, apply link, and the description as text and HTML.",
+            "transformation": {
+                "fields": ["company", "title", "applyUrl", "descriptionText", "descriptionHtml"]
+            },
+            "display": {
+                "component": "table",
+                "properties": {
+                    "company": { "label": "Company", "format": "text" },
+                    "title": { "label": "Title", "format": "text" },
+                    "applyUrl": { "label": "Apply", "format": "link" },
+                    "descriptionText": { "label": "Description", "format": "text" },
+                    "descriptionHtml": { "label": "Description HTML", "format": "text" }
+                }
+            }
+        }
+    }
+}
