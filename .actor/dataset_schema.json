@@ -2,7 +2,7 @@
     "$schema": "https://apify.com/schemas/v1/dataset.ide.json",
     "actorSpecification": 1,
     "fields": {
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "type": "object",
         "required": ["source", "boardId", "company", "jobId", "title", "locations", "workplaceType", "applyUrl"],
         "properties": {
@@ -10,93 +10,80 @@
                 "type": "string",
                 "title": "Source ATS",
                 "description": "Applicant tracking system the job was read from.",
-                "enum": ["greenhouse", "lever", "ashby", "workday"],
-                "example": "greenhouse"
+                "enum": ["greenhouse", "lever", "ashby", "workday"]
             },
             "boardId": {
                 "type": "string",
                 "title": "Board ID",
-                "description": "Board slug, or tenant/site for Workday.",
-                "example": "discord"
+                "description": "Board slug, or tenant/site for Workday."
             },
             "company": {
                 "type": "string",
                 "title": "Company",
-                "description": "Company name from the board, or a readable form of the board slug when the board does not send one.",
-                "example": "Discord"
+                "description": "Company name from the board, or a readable form of the board slug when the board does not send one."
             },
             "jobId": {
                 "type": "string",
                 "title": "Job ID",
-                "description": "Stable job identifier from the ATS.",
-                "example": "5231045"
+                "description": "Stable job identifier from the ATS."
             },
             "title": {
                 "type": "string",
-                "title": "Title",
-                "example": "Software Engineer"
+                "title": "Title"
             },
             "department": {
                 "type": ["string", "null"],
                 "title": "Department",
-                "description": "Department, with team appended when both are present. Null when the board does not provide one. Workday list rows usually have no department.",
-                "example": "Engineering"
+                "description": "Department, with team appended when both are present. Null when the board does not provide one. Workday list rows usually have no department."
             },
             "locations": {
                 "type": "array",
                 "title": "Locations",
                 "description": "Office or remote location names. Workday's 'N Locations' placeholder is omitted until the detail request fills in the cities.",
-                "items": { "type": "string" },
-                "example": ["San Francisco, CA"]
+                "items": { "type": "string" }
             },
             "workplaceType": {
                 "type": "string",
                 "title": "Workplace",
                 "description": "Remote, hybrid, onsite, or unknown.",
-                "enum": ["remote", "hybrid", "onsite", "unknown"],
-                "example": "hybrid"
+                "enum": ["remote", "hybrid", "onsite", "unknown"]
             },
             "isRemote": {
                 "type": ["boolean", "null"],
                 "title": "Remote flag",
-                "description": "True when the job is fully remote, or the source explicitly sets a remote flag on a hybrid job. False for onsite. Null when unknown.",
-                "example": false
+                "description": "True when the job is fully remote, or the source explicitly sets a remote flag on a hybrid job. False for onsite. Null when unknown."
             },
             "employmentType": {
                 "type": ["string", "null"],
                 "title": "Employment type",
-                "description": "Full-time, part-time, contract, internship, or the board's own label.",
-                "example": "Full-time"
+                "description": "Full-time, part-time, contract, internship, or the board's own label."
             },
             "salary": {
                 "type": ["object", "null"],
                 "title": "Salary",
                 "description": "Structured pay when the board publishes it. Null when it does not.",
                 "properties": {
-                    "min": { "type": ["number", "null"], "title": "Minimum", "example": 180000 },
-                    "max": { "type": ["number", "null"], "title": "Maximum", "example": 220000 },
-                    "currency": { "type": ["string", "null"], "title": "Currency", "example": "USD" },
-                    "interval": { "type": ["string", "null"], "title": "Interval", "description": "year, month, week, day, or hour.", "example": "year" },
-                    "text": { "type": ["string", "null"], "title": "Salary text", "example": "$180K – $220K" }
+                    "min": { "type": ["number", "null"], "title": "Minimum" },
+                    "max": { "type": ["number", "null"], "title": "Maximum" },
+                    "currency": { "type": ["string", "null"], "title": "Currency" },
+                    "interval": { "type": ["string", "null"], "title": "Interval", "description": "year, month, week, day, or hour." },
+                    "text": { "type": ["string", "null"], "title": "Salary text" }
                 }
             },
             "postedAt": {
                 "type": ["string", "null"],
                 "title": "Posted at",
-                "description": "ISO 8601 posted date. Workday list dates are estimated from 'Posted N days ago' until a detail request replaces them with the board start date.",
-                "example": "2026-09-03T17:32:53.000Z"
+                "description": "ISO 8601 posted date. Workday list dates are estimated from 'Posted N days ago' until a detail request replaces them with the board start date."
             },
             "updatedAt": {
                 "type": ["string", "null"],
                 "title": "Updated at",
-                "description": "ISO 8601 updated date when the board provides one.",
-                "example": "2026-09-25T20:45:00.000Z"
+                "description": "ISO 8601 updated date when the board provides one."
             },
             "applyUrl": {
                 "type": "string",
                 "title": "Apply URL",
-                "description": "Public application or job page.",
-                "example": "https://boards.greenhouse.io/discord/jobs/5231045"
+                "description": "Public application or job page."
             },
             "descriptionText": {
                 "type": ["string", "null"],
